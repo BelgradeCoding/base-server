@@ -1,3 +1,5 @@
+require('./config/config');
+
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -5,6 +7,10 @@ const cookieParser = require('cookie-parser');
 const hbs = require('express-hbs');
 
 const { Users, getUsers } = require('./utils/dummy_db');
+
+const { mongoose } = require('./db/mongoose');
+const { Todo } = require('./models/todo');
+const { User } = require('./models/user');
 const { authenticate } = require('./middleware/authenticate');
 const { loggedIn } = require('./middleware/loggedIn');
 const { inlineSyntax } = require('./parser/inline/inline-syntax');
@@ -16,13 +22,30 @@ getUsers().then((data) => {
     users = new Users(data);
 }).catch((err) => console.log(err));
 
-const port = process.env.PORT || 3000;
-
 const app = express();
-
+const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, '../public');
 
+app.use(bodyParser.json());
 app.use(express.static(publicPath));
+
+
+
+
+app.post('/todos', (req, res) => {
+    let todo = new Todo({
+        text: req.body.text
+    });
+    todo.save().then((doc) => {
+        res.send(doc);
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
+
+
+
+
 
 app.engine('hbs', hbs.express4({
     partialsDir: __dirname + '/views/partials'
