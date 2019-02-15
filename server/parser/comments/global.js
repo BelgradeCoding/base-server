@@ -1,7 +1,6 @@
 // Helper Functions
 
 function makeCodeArray(string) {
-    //string = string.replace(/\\n/g, "XXXX");
     let array = string.split(/$\n/gm);
     let custom;
     array = array.map(element => {

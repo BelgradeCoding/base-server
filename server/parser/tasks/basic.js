@@ -1,5 +1,6 @@
 const _ = require("lodash");
 
+
 let assignments = [
   `
     var a = $num;
